@@ -11,6 +11,8 @@ var movedir = Vector2(0,0) # move direction
 
 func _ready():
 	position = position.snapped(Vector2(tile_size, tile_size)) # make sure player is snapped to grid
+	last_position = position
+	target_position = position
 
 func _process(delta):
 	# IDLE STATE
@@ -22,7 +24,6 @@ func _process(delta):
 	# MOVING STATE
 	else:
 		if ray.is_colliding():
-			position = last_position
 			target_position = last_position
 		else:
 			position += speed * movedir * delta
