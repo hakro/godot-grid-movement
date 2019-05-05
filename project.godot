@@ -19,6 +19,10 @@ config/name="Grid Movement"
 run/main_scene="res://test.tscn"
 config/icon="res://icon.png"
 
+[debug]
+
+settings/fps/force_fps=60
+
 [input]
 
 ui_left={
@@ -44,4 +48,5 @@ ui_down={
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 environment/default_environment="res://default_env.tres"

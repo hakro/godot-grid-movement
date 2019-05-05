@@ -5,9 +5,9 @@ onready var ray = $RayCast2D
 var speed = 256 # big number because it's multiplied by delta
 var tile_size = 64 # size in pixels of tiles on the grid
 
-var last_position = position # last idle position
-var target_position = position # desired position to move towards
-var movedir = Vector2(0,0) # move direction
+var last_position = Vector2() # last idle position
+var target_position = Vector2() # desired position to move towards
+var movedir = Vector2() # move direction
 
 func _ready():
 	position = position.snapped(Vector2(tile_size, tile_size)) # make sure player is snapped to grid
@@ -15,23 +15,21 @@ func _ready():
 	target_position = position
 
 func _process(delta):
-	# IDLE STATE
+	# MOVEMENT
+	if ray.is_colliding():
+		position = last_position
+		target_position = last_position
+	else:
+		position += speed * movedir * delta
+		
+		if position.distance_to(last_position) >= tile_size - speed * delta: # if we've moved further than one space
+			position = target_position # snap the player to the intended position
+	
+	# IDLE
 	if position == target_position:
 		get_movedir()
 		last_position = position # record the player's current idle position
 		target_position += movedir * tile_size # if key is pressed, get new target (also shifts to moving state)
-	
-	# MOVING STATE
-	else:
-		if ray.is_colliding():
-			target_position = last_position
-		else:
-			position += speed * movedir * delta
-		
-			# PREVENT PLAYER FROM MOVING TOO FAR
-			var distance = (position - last_position).abs().length() # how far the player moved from their last idle position
-			if distance > tile_size - speed * delta: # subtracts speed * delta so there's no breaks in movement
-				position = target_position
 
 # GET DIRECTION THE PLAYER WANTS TO MOVE
 func get_movedir():
